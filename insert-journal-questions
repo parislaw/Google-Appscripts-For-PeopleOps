@@ -1,0 +1,48 @@
+function onOpen() {
+// creating a new menu item with quick edit options. 
+const ui = DocumentApp.getUi();
+// this second line create a command to gain access to the user interface of the document (aka google doc) using the DocumentApp method.
+  ui.createMenu('My Templates')
+  // this line creates the menu and names it My Templates at the top of the google docs.
+  .addItem('Journal Reflection Questions', 'insertJournalReflectionQuestions') 
+  /** this line adds an item under the new menu, called "Journal Reflection Questions" 
+  //after the comma we create a name for this button that can be used as a trigger. */
+  .addToUi();
+  // this line tells the program to add the new menu to google doc interface. 
+}
+//closing out the onOpen function
+
+function insertJournalReflectionQuestions() {
+  var currentDoc = DocumentApp.getActiveDocument();
+  var body = currentDoc.getBody();
+  var cursor = currentDoc.getCursor(); 
+  var sourceDoc = DocumentApp.openById('INSERT DOCUMENT ID HERE')
+  // insert your document ID in the space above.
+  var sourceBody = sourceDoc.getBody().copy();
+  var totalElements = sourceBody.getNumChildren();
+
+if (cursor) {
+  /** Attempt to insert text at the cursor position. If the insertion returns null, the cursor's
+  containing element doesn't allow insertions, so show the user an error message.
+  Note still not working exactly as I want. It inserts at the beginning of the document, but not exactly at the cursur. I need to test this out. 
+  */
+  for (var j = 0; j< totalElements; ++j ) {
+    var element = sourceBody.getChild(j).copy();
+    var type = element.getType();
+
+    if (type == DocumentApp.ElementType.PARAGRAPH){
+    // body.appendParagraph(element);
+    body.insertParagraph (j, element);
+    }
+  
+    else if( type == DocumentApp.ElementType.LIST_ITEM){
+    //  body.appendListItem(element);
+        body.insertListItem (j, element);
+    }
+    else {
+      DocumentApp.getUi().alert('Cannot insert text here.');
+      
+    }
+  }
+}
+}
